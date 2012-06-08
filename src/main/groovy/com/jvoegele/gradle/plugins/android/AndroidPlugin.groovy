@@ -32,6 +32,7 @@ import com.jvoegele.gradle.tasks.android.ProcessAndroidResources
 import com.jvoegele.gradle.tasks.android.instrumentation.InstrumentationTestsTask
 import com.jvoegele.gradle.enhancements.ScalaEnhancement
 import com.jvoegele.gradle.tasks.android.AndroidSignAndAlignTask
+import com.jvoegele.gradle.enhancements.IdeaEnhancement
 
 /**
  * Gradle plugin that extends the Java plugin for Android development.
@@ -271,6 +272,7 @@ class AndroidPlugin implements Plugin<Project> {
   private void configureEnhancements() {
     new JavadocEnhancement(project).apply()
     new EclipseEnhancement(project).apply()
+    new IdeaEnhancement(project).apply()
     new ScalaEnhancement(project).apply()
   }
 
