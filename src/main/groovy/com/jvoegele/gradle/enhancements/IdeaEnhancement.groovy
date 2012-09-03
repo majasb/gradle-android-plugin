@@ -39,11 +39,25 @@ class IdeaEnhancement extends GradlePluginEnhancement {
   def addAndroidFacet() {
     project.idea.module {
       iml.withXml { provider ->
-        def facetComp = provider.node.appendNode('component')
-        facetComp.@name = 'FacetManager'
-        def facetNode = facetComp.appendNode('facet', [type: 'android', name: 'Android'])
-        def facetConfNode = facetNode.appendNode('configuration')
-        facetConfNode.appendNode('option', ['name': 'LIBRARY_PROJECT', 'value': isLibraryProject()])
+        def facetManager = provider.node.find{it.@name=='FacetManager'}
+        if (!facetManager) {
+          facetManager = provider.node.appendNode('component', ['name': 'FacetManager'])
+        }
+        def androidFacet = facetManager.find{it.@name=='Android'}
+        if (!androidFacet) {
+          androidFacet = facetManager.appendNode('facet', [type: 'android', name: 'Android'])
+        }
+        def configuration = androidFacet.configuration
+        if (configuration) {
+          configuration = configuration.first()
+        } else {
+          configuration = androidFacet.appendNode('configuration')
+        }
+        def libraryProject = configuration.find{it.@name=='LIBRARY_PROJECT'}
+        if (!libraryProject) {
+          libraryProject = configuration.appendNode('option', ['name': 'LIBRARY_PROJECT'])
+        }
+        libraryProject.@value = isLibraryProject()
       }
     }
   }
