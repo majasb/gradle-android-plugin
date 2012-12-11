@@ -28,6 +28,9 @@ class AndroidSignAndAlignTask extends DefaultTask {
   @Optional @Input String keyAlias
   @Optional @Input String keyStorePassword
   @Optional @Input String keyAliasPassword
+  @Optional @Input String sigalg
+  @Optional @Input String digestalg
+  @Optional @Input String keyalg
   boolean verbose
 
   private File customUnsingedArchivePath
@@ -43,8 +46,8 @@ class AndroidSignAndAlignTask extends DefaultTask {
 
     def args = [JavaEnvUtils.getJdkExecutable('jarsigner'),
                 '-verbose',
-                '-sigalg', 'MD5withRSA',
-                '-digestalg', 'SHA1',
+                '-sigalg', sigalg != null ? sigalg : 'MD5withRSA',
+                '-digestalg', digestalg != null ? digestalg : 'SHA1',
                 '-keystore', keystore,
                 '-keypass', keypass,
                 '-storepass', storepass,
@@ -125,7 +128,15 @@ class AndroidSignAndAlignTask extends DefaultTask {
   }
 
   private String retrieveDebugKeystore() {
-      File debugKeystore = new File(System.getProperty('user.home'), '.android/debug.keystore')
+      File usersAndroidDir = new File(System.getProperty('user.home'), '.android')
+      if(!usersAndroidDir.exists()){
+        def result = usersAndroidDir.mkdirs()
+        if(!result){
+          throw new GradleException("Failed creating " + usersAndroidDir)
+        }
+      }
+
+      File debugKeystore = new File(usersAndroidDir, 'debug.keystore')
 
       if (!debugKeystore.exists()) {
         logger.info('Creating a new debug key...')
@@ -137,7 +148,9 @@ class AndroidSignAndAlignTask extends DefaultTask {
             keypass: 'android',
             validity: 10 * 365,
             storetype: 'JKS',
-            dname: 'CN=Android Debug,O=Android,C=US')
+            dname: 'CN=Android Debug,O=Android,C=US',
+            sigalg: sigalg != null ? sigalg : 'MD5withRSA',
+            keyalg: keyalg != null ? keyalg : 'RSA')
       }
 
       return debugKeystore.absolutePath

@@ -16,8 +16,8 @@
 
 package com.jvoegele.gradle.plugins.android
 
-class AndroidSetup_r18 extends AbstractAndroidSetup {
-  AndroidSetup_r18(project) {
+class AndroidSetup_r21 extends AbstractAndroidSetup {
+  AndroidSetup_r21(project) {
     super(project)
   }
 
@@ -82,6 +82,7 @@ class AndroidSetup_r18 extends AbstractAndroidSetup {
       libraryManifestFilePathOut: "project.library.manifest.file.path",
       libraryResFolderPathOut: "project.library.res.folder.path",
       libraryBinAidlFolderPathOut: "project.library.bin.aidl.folder.path",
+      libraryRFilePathOut: "project.library.bin.r.file.path",
       libraryNativeFolderPathOut: "project.library.native.folder.path",
       jarLibraryPathOut: "project.all.jars.path",
 
